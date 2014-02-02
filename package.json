@@ -1,0 +1,26 @@
+{
+  "name": "statemachine",
+  "version": "0.1.0",
+  "description": "Simple no frills state machine",
+  "main": "index.js",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "tape": "~2.4.2"
+  },
+  "scripts": {
+    "test": "tape test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://something"
+  },
+  "keywords": [
+    "statemachine",
+    "states",
+    "turing",
+    "transition"
+  ],
+  "author": "Drew Petersen <senofpeter@gmail.com>",
+  "license": "MIT"
+}
