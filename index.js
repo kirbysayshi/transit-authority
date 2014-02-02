@@ -7,7 +7,6 @@ function States(opts) {
     opts = { initial: opts };
   }
 
-  this._data = opts.data || {};
   this._state = opts.initial || null;
   this._transitions = {};
 
@@ -17,10 +16,6 @@ function States(opts) {
     });
   }
 
-}
-
-States.prototype.data = function() {
-  return this._data;
 }
 
 States.prototype.current = function() {
@@ -78,7 +73,7 @@ States.prototype.to = function(newState, cb) {
     }
   };
 
-  action.call(this.data(), controller);
+  action.call(null, controller);
 }
 
 States.prototype._transition = function(from, to) {

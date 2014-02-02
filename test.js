@@ -33,12 +33,6 @@ test('Constructor accepts options', function(t) {
   m = new StateMachine('ready');
   t.equal(m.current(), 'ready', 'Initial state should be ready');
 
-  var aThing = { amAThing: true };
-  opts = { initial: 'ready', data: aThing };
-  m = new StateMachine(opts);
-  t.equal(m.current(), 'ready', 'Initial state should be ready');
-  t.ok(m.data() === aThing, 'Data stash is same object');
-
   t.end();
 });
 
@@ -56,7 +50,6 @@ test('A transition controls its density by going', function(t) {
   var zalgo = true;
   m.transition('start => loaded', function(controller) {
     t.ok(controller, 'Transition callback receives a controller');
-    t.equal(this, m.data(), 'Transition context should be .data');
     t.equal(controller.from, 'start');
     t.equal(controller.to, 'loaded');
     controller.go();
@@ -76,7 +69,6 @@ test('A transition controls its density by halting', function(t) {
   var zalgo = true;
   m.transition('start => loaded', function(controller) {
     t.ok(controller, 'Transition callback receives a controller');
-    t.equal(this, m.data(), 'Transition context should be .data');
     t.equal(controller.from, 'start');
     t.equal(controller.to, 'loaded');
     controller.halt(new Error('NO PLUTONIUM'));
@@ -89,7 +81,6 @@ test('A transition controls its density by halting', function(t) {
     t.end();
   })
 });
-
 
 
 
