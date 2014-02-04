@@ -52,12 +52,12 @@ test('A transition controls its density by going', function(t) {
     t.ok(controller, 'Transition callback receives a controller');
     t.equal(controller.from, 'start');
     t.equal(controller.to, 'loaded');
-    controller.go();
+    controller.ok();
     zalgo = false;
   });
 
   m.to('loaded', function(err) {
-    t.error(err, 'Expect a successful transition');
+    t.iferror(err, 'Expect a successful transition');
     t.equal(zalgo, false, '.to callback should be async');
     t.end();
   });
@@ -81,6 +81,7 @@ test('A transition controls its density by halting', function(t) {
     t.end();
   })
 });
+
 
 
 

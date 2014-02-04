@@ -40,8 +40,12 @@ States.prototype.transition = function(name, action) {
   }
 }
 
-States.prototype.to = function(newState, cb) {
+function noop() {}
+
+States.prototype.to = function(newState, opt_cb) {
+  var cb = opt_cb || noop;
   var self = this;
+
   var from = this.current();
   var entry = this._transitions[from];
   var action = entry[newState];
@@ -62,7 +66,7 @@ States.prototype.to = function(newState, cb) {
   var controller = {
     from: from,
     to: newState,
-    go: function() {
+    ok: function() {
       self._state = newState;
       zalgoWard(null);
       return;
