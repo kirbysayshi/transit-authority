@@ -164,5 +164,27 @@ test('A transition controls its density by halting', function(t) {
 });
 
 
+var Player = require('./examples/player');
 
+test('Player: playing ("shortcuts")', function(t) {
+
+  var p = new Player;
+  var track = 'Track 1';
+  p.queue(track);
+
+  // User clicks play
+  p.play();
+
+  t.equal(p.visual.current(), 'playing', 'Player should be playing');
+  t.equal(p.track, track);
+  t.end();
+
+  function render(state) {
+    return ''
+      + (state.playing ? ' Playing ' : ' Paused ')
+      + (state.loading ? ' Spinner! ' : '')
+  }
+})
+
+//test('A')
 
