@@ -134,7 +134,6 @@ test('An undefined destination is Error', function(t) {
 test('A transition controls its density by going', function(t) {
 
   var m = new StateMachine();
-  var zalgo = true;
   m.transition('start => loaded', function(controller) {
     t.ok(controller, 'Transition callback receives a controller');
     t.equal(controller.from, 'start');
@@ -145,7 +144,6 @@ test('A transition controls its density by going', function(t) {
 
   m.to('loaded', function(err) {
     t.iferror(err, 'Expect a successful transition');
-    t.equal(zalgo, false, '.to callback should be async');
     t.end();
   });
 });
@@ -153,18 +151,15 @@ test('A transition controls its density by going', function(t) {
 test('A transition controls its density by halting', function(t) {
 
   var m = new StateMachine();
-  var zalgo = true;
   m.transition('start => loaded', function(controller) {
     t.ok(controller, 'Transition callback receives a controller');
     t.equal(controller.from, 'start');
     t.equal(controller.to, 'loaded');
     controller.halt(new Error('NO PLUTONIUM'));
-    zalgo = false;
   });
 
   m.to('loaded', function(err) {
     t.ok(err, 'Expect an error');
-    t.equal(zalgo, false, '.to callback should be async');
     t.end();
   })
 });

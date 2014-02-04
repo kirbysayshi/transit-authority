@@ -67,15 +67,8 @@ States.prototype.to = function(newState, opt_cb) {
   var from = this.current();
   var entry = this._transitions[from];
 
-  var zalgoWard = function() {
-    var args = arguments
-    process.nextTick(function() {
-      cb.apply(null, args);
-    });
-  }
-
   if (!entry) {
-    zalgoWard(new Error('Undefined transition requested: '
+    cb(new Error('Undefined transition requested: '
       + from + ' (undefined) => ' + newState));
     return;
   }
@@ -83,7 +76,7 @@ States.prototype.to = function(newState, opt_cb) {
   var action = entry[newState];
 
   if (!action) {
-    zalgoWard(new Error('Undefined transition requested: '
+    cb(new Error('Undefined transition requested: '
       + from + ' => ' + newState + ' (undefined)'));
     return;
   }
@@ -94,12 +87,12 @@ States.prototype.to = function(newState, opt_cb) {
     ok: function() {
       self._state = newState;
       self._lg('Transition ok %s => %s', from, newState);
-      zalgoWard(null);
+      cb(null);
       return;
     },
     halt: function(err) {
       self._lg('Halted transition %s => %s', from, newState);
-      zalgoWard(err || null);
+      cb(err || null);
       return;
     }
   };
