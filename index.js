@@ -27,6 +27,10 @@ States.prototype.current = function() {
   return this._state;
 }
 
+// TODO: should these create constants on the machine?
+// .transition('now => then')
+// .NOW .THEN
+
 States.prototype.transition = function(name, action) {
   var self = this;
   var parsed = this._parseTransition(name);
