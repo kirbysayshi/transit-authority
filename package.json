@@ -1,7 +1,7 @@
 {
-  "name": "statemachine",
+  "name": "transit-authority",
   "version": "0.1.0",
-  "description": "Simple no frills state machine",
+  "description": "Define state transitions as callbacks.",
   "main": "index.js",
   "dependencies": {
     "debug": "~0.7.4"
@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://something"
+    "url": "http://github.com/kirbysayshi/transit-authority.git"
   },
   "keywords": [
     "statemachine",
@@ -23,6 +23,6 @@
     "turing",
     "transition"
   ],
-  "author": "Drew Petersen <senofpeter@gmail.com>",
+  "author": "Drew Petersen <kirbysayshi@gmail.com>",
   "license": "MIT"
 }
