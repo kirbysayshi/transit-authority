@@ -88,6 +88,26 @@ test('A transition can define multiple origins and destinations', function(t) {
   t.end();
 });
 
+test('Origins and destinations can be wrapped in {} or () or not', function(t) {
+  var input;
+  var output = ['one', 'two', 'three'];
+  var parse = StateMachine.prototype._parseGroup;
+
+  input = '{ one, two, three }';
+  t.deepEqual(parse(input), output);
+
+  input = '( one, two, three )';
+  t.deepEqual(parse(input), output);
+
+  input = 'one, two, three';
+  t.deepEqual(parse(input), output);
+
+  input = '{ one,two,three }';
+  t.deepEqual(parse(input), output);
+
+  t.end();
+})
+
 test('A transition controls its density by going', function(t) {
 
   var m = new StateMachine();
