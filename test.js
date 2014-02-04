@@ -108,6 +108,29 @@ test('Origins and destinations can be wrapped in {} or () or not', function(t) {
   t.end();
 })
 
+test('An undefined origin is Error', function(t) {
+  var m = new StateMachine();
+
+  m.transition('a => b', function(ctr) {
+    ctr.ok();
+    m.to('c', function (err) {
+      t.ok(err, 'Invalid transition should error (no b => c defined)');
+      t.end();
+    });
+  });
+
+  m.to('b');
+})
+
+test('An undefined destination is Error', function(t) {
+  var m = new StateMachine();
+  m.transition('a => c', function() {});
+  m.to('b', function(err) {
+    t.ok(err, 'Invalid transition should error');
+    t.end();
+  });
+})
+
 test('A transition controls its density by going', function(t) {
 
   var m = new StateMachine();
