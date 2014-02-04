@@ -90,19 +90,19 @@ test('A transition can define multiple origins and destinations', function(t) {
 
 test('Origins and destinations can be wrapped in {} or () or not', function(t) {
   var input;
-  var output = ['one', 'two', 'three'];
+  var output = ['a', 'b', 'three'];
   var parse = StateMachine.prototype._parseGroup;
 
-  input = '{ one, two, three }';
+  input = '{ a, b, three }';
   t.deepEqual(parse(input), output);
 
-  input = '( one, two, three )';
+  input = '( a, b, three )';
   t.deepEqual(parse(input), output);
 
-  input = 'one, two, three';
+  input = 'a, b, three';
   t.deepEqual(parse(input), output);
 
-  input = '{ one,two,three }';
+  input = '{ a,b,three }';
   t.deepEqual(parse(input), output);
 
   t.end();

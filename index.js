@@ -116,7 +116,7 @@ States.prototype._parseTransition = function(name) {
 }
 
 States.prototype._parseGroup = function(group) {
-  var re = /[^{(,]+?([^,]+)+[^}),]+?/g;
+  var re = /[^{}(),]+/g;
   var result = group.match(re);
   return result.map(function(s) {
     return s.trim();
