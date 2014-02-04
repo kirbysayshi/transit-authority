@@ -2,7 +2,7 @@
 var test = require('tape').test;
 var StateMachine = require('./');
 
-test('The initial state is the first transition defined if not explicit', function(t) {
+test('Initial state is the first defined if not explicit', function(t) {
   var m = new StateMachine();
   m.transition('start => ready', function() {});
 
@@ -27,8 +27,10 @@ test('Constructor accepts options', function(t) {
   };
   m = new StateMachine(opts);
   t.equal(m.current(), 'ready', 'Initial state should be ready');
-  t.ok(typeof m._transitions.start.ready === 'function', 'start state has pointer to start -> ready callback');
-  t.ok(typeof m._transitions.ready.playing === 'function', 'ready state has pointer to ready -> playing callback');
+  t.ok(typeof m._transitions.start.ready === 'function',
+    'start state has pointer to start -> ready callback');
+  t.ok(typeof m._transitions.ready.playing === 'function',
+    'ready state has pointer to ready -> playing callback');
 
   m = new StateMachine('ready');
   t.equal(m.current(), 'ready', 'Initial state should be ready');
@@ -40,7 +42,8 @@ test('A new transition populates internal states', function(t) {
   var m = new StateMachine();
   m.transition('start => ready', function() {});
 
-  t.ok(m._transitions.start.ready, 'start state has pointer to start -> ready callback');
+  t.ok(m._transitions.start.ready,
+    'start state has pointer to start -> ready callback');
   t.end();
 });
 
