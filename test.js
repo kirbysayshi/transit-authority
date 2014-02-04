@@ -136,8 +136,8 @@ test('A transition controls its density by going', function(t) {
   var m = new StateMachine();
   m.transition('start => loaded', function(controller) {
     t.ok(controller, 'Transition callback receives a controller');
-    t.equal(controller.from, 'start');
-    t.equal(controller.to, 'loaded');
+    t.equal(controller.fromState, 'start');
+    t.equal(controller.toState, 'loaded');
     controller.ok();
     zalgo = false;
   });
@@ -153,8 +153,8 @@ test('A transition controls its density by halting', function(t) {
   var m = new StateMachine();
   m.transition('start => loaded', function(controller) {
     t.ok(controller, 'Transition callback receives a controller');
-    t.equal(controller.from, 'start');
-    t.equal(controller.to, 'loaded');
+    t.equal(controller.fromState, 'start');
+    t.equal(controller.toState, 'loaded');
     controller.halt(new Error('NO PLUTONIUM'));
   });
 
