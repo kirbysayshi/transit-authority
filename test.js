@@ -47,6 +47,47 @@ test('A new transition populates internal states', function(t) {
   t.end();
 });
 
+test('A transition can define multiple origins', function(t) {
+  var m = new StateMachine();
+  m.transition('{start, epoch, reset} => ready', function() {});
+
+  t.ok(m._transitions.start.ready,
+    'start state has pointer to start -> ready callback');
+  t.ok(m._transitions.epoch.ready,
+    'epoch state has pointer to epoch -> ready callback');
+  t.ok(m._transitions.reset.ready,
+    'reset state has pointer to reset -> ready callback');
+  t.end();
+});
+
+test('A transition can define multiple destinations', function(t) {
+  var m = new StateMachine();
+  m.transition('start => {ready, waiting, reset}', function() {});
+
+  t.ok(m._transitions.start.ready,
+    'start state has pointer to start -> ready callback');
+  t.ok(m._transitions.start.waiting,
+    'start state has pointer to start -> waiting callback');
+  t.ok(m._transitions.start.reset,
+    'start state has pointer to start -> reset callback');
+  t.end();
+});
+
+test('A transition can define multiple origins and destinations', function(t) {
+  var m = new StateMachine();
+  m.transition('{start, epoch} => {ready, waiting}', function() {});
+
+  t.ok(m._transitions.start.ready,
+    'start state has pointer to start -> ready callback');
+  t.ok(m._transitions.start.waiting,
+    'start state has pointer to start -> waiting callback');
+  t.ok(m._transitions.epoch.ready,
+    'epoch state has pointer to epoch -> ready callback');
+  t.ok(m._transitions.epoch.waiting,
+    'epoch state has pointer to epoch -> waiting callback');
+  t.end();
+});
+
 test('A transition controls its density by going', function(t) {
 
   var m = new StateMachine();
