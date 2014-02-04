@@ -95,13 +95,6 @@ States.prototype.to = function(newState, opt_cb) {
       cb(err || null);
       return;
     },
-    divert: function(to) {
-      self._lg('Diverting transition %s => %s to %s => %s',
-        from, newState, from, to);
-      // Use original callback.
-      self.to(to, cb);
-      return;
-    },
     to: function(name, cb) {
       self._lg('Attempting transition %s => %s from within %s => %s',
         newState, name, from, newState);

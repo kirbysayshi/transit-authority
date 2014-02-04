@@ -164,32 +164,4 @@ test('A transition controls its density by halting', function(t) {
   })
 });
 
-test('A `to` callback will execute even if initial transition halts', function(t) {
-
-  var m = new StateMachine();
-
-  m.transition('a => c', function(ctr) {
-    t.equal(m.current(), 'a');
-    ctr.divert('b', t.iferror.bind(t));
-  });
-
-  m.transition('a => b', function(ctr) {
-    ctr.ok();
-    ctr.to('c', t.iferror.bind(t));
-  });
-
-  m.transition('b => c', function(ctr) {
-    ctr.ok();
-  })
-
-  m.to('c', function(err) {
-    t.iferror(err);
-    t.equal(m.current(), 'c', 'Should only callback after c has been reached');
-    t.end();
-  });
-
-});
-
-
-
 
