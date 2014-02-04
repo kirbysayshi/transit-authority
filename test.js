@@ -139,7 +139,6 @@ test('A transition controls its density by going', function(t) {
     t.equal(controller.fromState, 'start');
     t.equal(controller.toState, 'loaded');
     controller.ok();
-    zalgo = false;
   });
 
   m.to('loaded', function(err) {
@@ -163,5 +162,7 @@ test('A transition controls its density by halting', function(t) {
     t.end();
   })
 });
+
+
 
 
