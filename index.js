@@ -68,20 +68,25 @@ States.prototype.to = function(newState, opt_cb) {
   var cb = opt_cb || noop;
   var self = this;
 
+  var err;
   var from = this.current();
   var entry = this._transitions[from];
 
   if (!entry) {
-    cb(new Error('Undefined transition requested: '
-      + from + ' (undefined) => ' + newState));
+    err = new Error('Undefined transition requested: '
+      + from + ' (undefined) => ' + newState);
+    self._lg(err);
+    cb(err);
     return;
   }
 
   var action = entry[newState];
 
   if (!action) {
-    cb(new Error('Undefined transition requested: '
-      + from + ' => ' + newState + ' (undefined)'));
+    err = new Error('Undefined transition requested: '
+      + from + ' => ' + newState + ' (undefined)');
+    self._lg(err);
+    cb(err);
     return;
   }
 
