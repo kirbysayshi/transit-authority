@@ -93,20 +93,31 @@ States.prototype.to = function(newState, opt_cb) {
   var controller = {
     fromState: from,
     toState: newState,
+    oked: false,
+    halted: false,
     ok: function() {
+      transitionCheck();
       self._state = newState;
       self._lg('Transition ok %s => %s', from, newState);
+      controller.oked = true;
       cb(null);
       return;
     },
     halt: function(err) {
+      transitionCheck();
       self._lg('Halted transition %s => %s', from, newState);
+      controller.halted = true;
       cb(err || null);
       return;
     },
     to: function(name, cb) {
       self._lg('Attempting transition %s => %s from within %s => %s',
         newState, name, from, newState);
+      if (!controller.oked && !controller.halted) {
+        self._lg('WARNING: transitioning %s => %s from within %s => %s'
+          + ' without acceptance (.ok) or halting (.halt) of %s',
+          newState, name, from, newState, newState);
+      }
       self.to(name, cb);
       return;
     }
@@ -114,6 +125,19 @@ States.prototype.to = function(newState, opt_cb) {
 
   this._lg('Executing transition action %s => %s', from, newState);
   action.call(null, controller);
+  return;
+
+  function transitionCheck() {
+    if (controller.oked === true) {
+      throw new Error('Transition ' + from + ' => ' + newState + ' '
+        + 'has already been completed. (Duplicate call to .ok)');
+    }
+
+    if (controller.halted === true) {
+      throw new Error('Transition ' + from + ' => ' + newState + ' '
+        + 'has already been halted. (Duplicate call to .halt)');
+    }
+  }
 }
 
 States.prototype._parseTransition = function(name) {
