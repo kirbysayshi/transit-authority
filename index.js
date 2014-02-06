@@ -38,10 +38,10 @@ States.prototype.transition = function(name, action) {
   var tos = this._parseGroup(parsed[1]);
 
   if (!froms || !tos) {
-    throw new Error('Invalid transition group %s', froms ? tos : froms);
+    throw new Error('Invalid transition group %s', froms ? tos.join(',') : froms.join(','));
   }
 
-  self._lg('Parsed transitions %s => %s', froms, tos);
+  self._lg('Parsed transitions %s => %s', froms.join(','), tos.join(','));
 
   froms.forEach(function(from) {
     var fromTrans = self._transitions[from] = self._transitions[from] || {};
