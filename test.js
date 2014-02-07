@@ -303,7 +303,7 @@ test('.ok seals subsequent calls to .halt', function(t) {
 
 var Player = require('./examples/player');
 
-test('Player: playing ("shortcuts")', function(t) {
+test('Player example', function(t) {
 
   var p = new Player;
 
