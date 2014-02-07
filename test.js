@@ -321,18 +321,18 @@ test('Player: playing ("shortcuts")', function(t) {
     p.play();
   });
 
-  t.equal(p.visual.current(), 'playing', 'Player should be playing');
+  t.equal(p.machine.current(), 'playing', 'Player should be playing');
   t.equal(p.track, track1);
 
   // User clicks >|
   p.nextTrack();
 
-  t.equal(p.visual.current(), 'playing', 'Player should still be playing');
+  t.equal(p.machine.current(), 'playing', 'Player should still be playing');
   t.equal(p.track, track2);
 
   // User Clicks pause
   p.pause();
-  t.equal(p.visual.current(), 'paused', 'Player should be paused');
+  t.equal(p.machine.current(), 'paused', 'Player should be paused');
 
   // User clicks play, and next, which should wrap around.
   p.play();
@@ -340,7 +340,7 @@ test('Player: playing ("shortcuts")', function(t) {
   t.equal(p.track, track1, 'Expect track wrap around');
 
   p.emptyQueue();
-  t.equal(p.visual.current(), 'waiting', 'Player should be waiting after emptied queue');
+  t.equal(p.machine.current(), 'waiting', 'Player should be waiting after emptied queue');
 
   t.end();
 })

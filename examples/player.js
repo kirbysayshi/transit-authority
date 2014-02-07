@@ -12,7 +12,7 @@ function Player() {
   function noop() {}
   this.audio = { play: noop, pause: noop };
 
-  var v = this.visual = new StateMachine({ id: 'visual' });
+  var v = this.machine = new StateMachine({ id: 'machine' });
 
   v.transition('waiting => ready', function(ctr) {
     self.track = self.queued[self.index];
@@ -51,27 +51,27 @@ function Player() {
 }
 
 Player.prototype.play = function(cb) {
-  this.visual.to('playing', cb);
+  this.machine.to('playing', cb);
 }
 
 Player.prototype.pause = function() {
-  this.visual.to('paused');
+  this.machine.to('paused');
 }
 
 Player.prototype.queue = function(track) {
   this.queued.push(track);
 
-  if(this.visual.current() === 'waiting') {
+  if(this.machine.current() === 'waiting') {
     // Load up the newly queued track if we're waiting for one.
-    this.visual.to('ready');
+    this.machine.to('ready');
   }
 }
 
 Player.prototype.emptyQueue = function() {
   this.queued.length = 0;
-  this.visual.to('waiting');
+  this.machine.to('waiting');
 }
 
 Player.prototype.nextTrack = function() {
-  this.visual.to('next');
+  this.machine.to('next');
 }
