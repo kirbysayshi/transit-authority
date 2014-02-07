@@ -13,47 +13,13 @@ function Player() {
   this.audio = { play: noop, pause: noop };
 
   var v = this.visual = new StateMachine({ id: 'visual' });
-  var d = this.datas = new StateMachine({ id: 'data' });
-
-  // Visual will contain:
-  // waiting => ready
-  // ready => playing
-  // playing => paused
-  // playing => next
-  // paused => next
-  // next => waiting
-  // next => playing
-
-  // Data will contain:
-  // ready => loading
-  // loading => loaded
-  // loaded => ready
 
   v.transition('waiting => ready', function(ctr) {
-
-    if (!self.track) {
-      if (self.queued.length === 0 || !self.queued[self.index]) {
-        ctr.halt(new Error('No tracks to load'));
-        return;
-      }
-    }
-
     self.track = self.queued[self.index];
     ctr.ok();
   })
 
-  /*v.transition('waiting => playing', function(ctr) {
-
-    // This is a "shortcut" to prevent duplicate logic...
-    // Maybe?
-    ctr.halt();
-    ctr.to('ready', function(err) {
-      if (err) throw err;
-      v.to('playing');
-    })
-  })*/
-
-  v.transition('ready => playing', function(ctr) {
+  v.transition('ready, next, paused => playing', function(ctr) {
     self.audio.play(self.track);
     ctr.ok();
   })
@@ -70,18 +36,22 @@ function Player() {
       self.index = 0;
     }
 
-    if (!self.queued[self.index]) {
-      ctr.halt();
-      v.to('waiting');
-    } else {
-      ctr.ok();
-      v.to('playing');
-    }
+    ctr.ok();
+    self.track = self.queued[self.index];
+    // Return to previous playing or paused state.
+    v.to(ctr.fromState);
+  })
+
+  v.transition('playing, paused => waiting', function(ctr) {
+    self.audio.pause();
+    self.track = null;
+    self.index = 0;
+    ctr.ok();
   })
 }
 
-Player.prototype.play = function() {
-  this.visual.to('playing');
+Player.prototype.play = function(cb) {
+  this.visual.to('playing', cb);
 }
 
 Player.prototype.pause = function() {
@@ -95,6 +65,11 @@ Player.prototype.queue = function(track) {
     // Load up the newly queued track if we're waiting for one.
     this.visual.to('ready');
   }
+}
+
+Player.prototype.emptyQueue = function() {
+  this.queued.length = 0;
+  this.visual.to('waiting');
 }
 
 Player.prototype.nextTrack = function() {

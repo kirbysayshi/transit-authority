@@ -108,6 +108,51 @@ test('Origins and destinations can be wrapped in {} or () or not', function(t) {
   t.end();
 })
 
+test('Transitions throw if malformed', function(t) {
+  var m = new StateMachine();
+
+  t.throws(function() {
+    m.transition(' => nope', function(){ });
+  }, 'Missing start');
+
+  t.throws(function() {
+    m.transition('yep => ', function(){ });
+  }, 'Missing end');
+
+  t.throws(function() {
+    m.transition(', => nope', function(){ });
+  }, 'Missing multiple start');
+
+  t.throws(function() {
+    m.transition('yep => ,', function(){ });
+  }, 'Missing multiple end');
+
+  t.end();
+})
+
+test('Transitions throw if duplicatd', function(t) {
+  var m = new StateMachine();
+  m.transition('yep => nope', function(){ });
+
+  t.throws(function() {
+    m.transition('yep => nope', function(){ });
+  }, 'Straight duplicate');
+
+  t.throws(function() {
+    m.transition('yep, hey => nope', function(){ });
+  }, 'Half-start duplicate');
+
+  t.throws(function() {
+    m.transition('yep => nope, hey', function(){ });
+  }, 'Half-end duplicate');
+
+  t.throws(function() {
+    m.transition('yep, hey => nope, hey', function(){ });
+  }, 'Grouped duplicate');
+
+  t.end();
+})
+
 test('An undefined origin is Error', function(t) {
   var m = new StateMachine();
 
@@ -163,28 +208,141 @@ test('A transition controls its density by halting', function(t) {
   })
 });
 
+test('A transition can spawn another transition', function(t) {
+  var m = new StateMachine();
+
+  m.transition('start => loaded', function(ctr) {
+    ctr.ok();
+    ctr.to('finished', function(err) {
+      t.iferror(err);
+      t.end();
+    });
+  })
+
+  m.transition('loaded => finished', function(ctr) {
+    ctr.ok();
+  });
+
+  m.to('loaded');
+});
+
+test('A transition spawning another transition warns if no ok/halt', function(t) {
+
+  var m = new StateMachine();
+
+  // Capture debug output for warnings.
+  var _debug = m._lg;
+  var _data = '';
+  m._lg = function() {
+    _data += [].join.call(arguments, ',');
+  }
+
+  m.transition('start => loaded', function(ctr) {
+    ctr.to('finished', function(err) {
+      m._lg = _debug;
+      t.iferror(err);
+      t.ok(_data.indexOf('WARNING: transitioning') > -1, 'stderr contains warning');
+      t.end();
+    });
+  })
+
+  m.transition('start => finished', function(ctr) {
+    ctr.ok();
+  });
+
+  m.to('loaded');
+});
+
+test('.ok seals subsequent calls', function(t) {
+  var m = new StateMachine();
+  m.transition('start => loaded', function(ctr) {
+    ctr.ok();
+    setTimeout(function() {
+      t.throws(ctr.ok)
+      t.end();
+    })
+  })
+  m.to('loaded');
+})
+
+test('.halt seals subsequent calls', function(t) {
+  var m = new StateMachine();
+  m.transition('start => loaded', function(ctr) {
+    ctr.halt();
+    setTimeout(function() {
+      t.throws(ctr.halt)
+      t.end();
+    })
+  })
+  m.to('loaded');
+})
+
+test('.halt seals subsequent calls to .ok', function(t) {
+  var m = new StateMachine();
+  m.transition('start => loaded', function(ctr) {
+    ctr.halt();
+    setTimeout(function() {
+      t.throws(ctr.ok)
+      t.end();
+    })
+  })
+  m.to('loaded');
+})
+
+test('.ok seals subsequent calls to .halt', function(t) {
+  var m = new StateMachine();
+  m.transition('start => loaded', function(ctr) {
+    ctr.ok();
+    setTimeout(function() {
+      t.throws(ctr.halt)
+      t.end();
+    })
+  })
+  m.to('loaded');
+})
 
 var Player = require('./examples/player');
 
 test('Player: playing ("shortcuts")', function(t) {
 
   var p = new Player;
-  var track = 'Track 1';
-  p.queue(track);
+
+  var track1 = 'Track 1';
+  var track2 = 'Track 2';
 
   // User clicks play
-  p.play();
+  p.play(function(err) {
+    t.ok(err, 'Expect error if no tracks queued');
+
+    // Oops, no tracks yet!
+    p.queue(track1);
+    p.queue(track2);
+
+    p.play();
+  });
 
   t.equal(p.visual.current(), 'playing', 'Player should be playing');
-  t.equal(p.track, track);
-  t.end();
+  t.equal(p.track, track1);
 
-  function render(state) {
-    return ''
-      + (state.playing ? ' Playing ' : ' Paused ')
-      + (state.loading ? ' Spinner! ' : '')
-  }
+  // User clicks >|
+  p.nextTrack();
+
+  t.equal(p.visual.current(), 'playing', 'Player should still be playing');
+  t.equal(p.track, track2);
+
+  // User Clicks pause
+  p.pause();
+  t.equal(p.visual.current(), 'paused', 'Player should be paused');
+
+  // User clicks play, and next, which should wrap around.
+  p.play();
+  p.nextTrack();
+  t.equal(p.track, track1, 'Expect track wrap around');
+
+  p.emptyQueue();
+  t.equal(p.visual.current(), 'waiting', 'Player should be waiting after emptied queue');
+
+  t.end();
 })
 
-//test('A')
 
