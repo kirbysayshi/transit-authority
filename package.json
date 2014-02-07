@@ -13,7 +13,7 @@
   },
   "scripts": {
     "test": "tape test.js",
-    "test-debug": "DEBUG=statemachine:* tape test.js",
+    "test-debug": "DEBUG=transit-authority:* tape test.js",
     "test-coverage": "browserify -t coverify test.js --bare | node | coverify"
   },
   "repository": {
