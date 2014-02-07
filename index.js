@@ -33,12 +33,13 @@ States.prototype.current = function() {
 
 States.prototype.transition = function(name, action) {
   var self = this;
-  var parsed = this._parseTransition(name);
-  var froms = this._parseGroup(parsed[0]);
-  var tos = this._parseGroup(parsed[1]);
 
-  if (!froms || !tos) {
-    throw new Error('Invalid transition group %s', froms ? tos.join(',') : froms.join(','));
+  try {
+    var parsed = this._parseTransition(name);
+    var froms = this._parseGroup(parsed[0]);
+    var tos = this._parseGroup(parsed[1]);
+  } catch(e) {
+    throw new Error('Invalid transition name: ' + name + '\n' + e.message);
   }
 
   self._lg('Parsed transitions %s => %s', froms.join(','), tos.join(','));
