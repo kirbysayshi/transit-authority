@@ -7,11 +7,14 @@
     "debug": "~0.7.4"
   },
   "devDependencies": {
-    "tape": "~2.4.2"
+    "tape": "~2.4.2",
+    "coverify": "~1.0.5",
+    "browserify": "~3.24.13"
   },
   "scripts": {
     "test": "tape test.js",
-    "test-debug": "DEBUG=statemachine:* tape test.js"
+    "test-debug": "DEBUG=statemachine:* tape test.js",
+    "test-coverage": "browserify -t coverify test.js --bare | node | coverify"
   },
   "repository": {
     "type": "git",
