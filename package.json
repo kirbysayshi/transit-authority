@@ -12,9 +12,9 @@
     "browserify": "~3.24.13"
   },
   "scripts": {
-    "test": "tape test.js",
-    "test-debug": "DEBUG=transit-authority:* tape test.js",
-    "test-coverage": "browserify -t coverify test.js --bare | node | coverify"
+    "test": "tape test/*.js",
+    "test-debug": "DEBUG=transit-authority:* tape test/*.js",
+    "test-coverage": "browserify -t coverify test/*.js --bare | node | coverify"
   },
   "repository": {
     "type": "git",
