@@ -1,5 +1,4 @@
 var test = require('tape').test;
-var StateMachine = require('../');
 var Player = require('../examples/player');
 
 test('Player example', function(t) {

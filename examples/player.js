@@ -1,4 +1,4 @@
-var StateMachine = require('../');
+var TMachine = require('../');
 
 module.exports = Player;
 
@@ -12,7 +12,7 @@ function Player() {
   function noop() {}
   this.audio = { play: noop, pause: noop };
 
-  var v = this.machine = new StateMachine({ id: 'machine' });
+  var v = this.machine = new TMachine({ id: 'machine' });
 
   v.transition('waiting => ready', function(ctr) {
     self.track = self.queued[self.index];

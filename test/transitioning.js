@@ -1,9 +1,9 @@
 var test = require('tape').test;
-var StateMachine = require('../');
+var TMachine = require('../');
 
 test('A transition controls its density by going', function(t) {
 
-  var m = new StateMachine();
+  var m = new TMachine();
   m.transition('start => loaded', function(controller) {
     t.ok(controller, 'Transition callback receives a controller');
     t.equal(controller.fromState, 'start');
@@ -19,7 +19,7 @@ test('A transition controls its density by going', function(t) {
 
 test('A transition controls its density by halting', function(t) {
 
-  var m = new StateMachine();
+  var m = new TMachine();
   m.transition('start => loaded', function(controller) {
     t.ok(controller, 'Transition callback receives a controller');
     t.equal(controller.fromState, 'start');
@@ -34,7 +34,7 @@ test('A transition controls its density by halting', function(t) {
 });
 
 test('A transition can spawn another transition', function(t) {
-  var m = new StateMachine();
+  var m = new TMachine();
 
   m.transition('start => loaded', function(ctr) {
     ctr.ok();
@@ -53,7 +53,7 @@ test('A transition can spawn another transition', function(t) {
 
 test('A transition spawning another transition warns if no ok/halt', function(t) {
 
-  var m = new StateMachine();
+  var m = new TMachine();
 
   // Capture debug output for warnings.
   var _debug = m._lg;
@@ -79,7 +79,7 @@ test('A transition spawning another transition warns if no ok/halt', function(t)
 });
 
 test('.ok seals subsequent calls', function(t) {
-  var m = new StateMachine();
+  var m = new TMachine();
   m.transition('start => loaded', function(ctr) {
     ctr.ok();
     setTimeout(function() {
@@ -91,7 +91,7 @@ test('.ok seals subsequent calls', function(t) {
 })
 
 test('.halt seals subsequent calls', function(t) {
-  var m = new StateMachine();
+  var m = new TMachine();
   m.transition('start => loaded', function(ctr) {
     ctr.halt();
     setTimeout(function() {
@@ -103,7 +103,7 @@ test('.halt seals subsequent calls', function(t) {
 })
 
 test('.halt seals subsequent calls to .ok', function(t) {
-  var m = new StateMachine();
+  var m = new TMachine();
   m.transition('start => loaded', function(ctr) {
     ctr.halt();
     setTimeout(function() {
@@ -115,7 +115,7 @@ test('.halt seals subsequent calls to .ok', function(t) {
 })
 
 test('.ok seals subsequent calls to .halt', function(t) {
-  var m = new StateMachine();
+  var m = new TMachine();
   m.transition('start => loaded', function(ctr) {
     ctr.ok();
     setTimeout(function() {
@@ -127,7 +127,7 @@ test('.ok seals subsequent calls to .halt', function(t) {
 })
 
 test('If no error is passed to .halt, a default one is present', function(t) {
-  var m = new StateMachine();
+  var m = new TMachine();
   m.transition('start => loaded', function(ctr) {
     ctr.halt();
   })

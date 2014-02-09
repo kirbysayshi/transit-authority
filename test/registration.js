@@ -1,8 +1,8 @@
 var test = require('tape').test;
-var StateMachine = require('../');
+var TMachine = require('../');
 
 test('A new transition populates internal states', function(t) {
-  var m = new StateMachine();
+  var m = new TMachine();
   m.transition('start => ready', function() {});
 
   t.ok(m._transitions.start.ready,
@@ -11,7 +11,7 @@ test('A new transition populates internal states', function(t) {
 });
 
 test('A transition can define multiple origins', function(t) {
-  var m = new StateMachine();
+  var m = new TMachine();
   m.transition('{start, epoch, reset} => ready', function() {});
 
   t.ok(m._transitions.start.ready,
@@ -24,7 +24,7 @@ test('A transition can define multiple origins', function(t) {
 });
 
 test('A transition can define multiple destinations', function(t) {
-  var m = new StateMachine();
+  var m = new TMachine();
   m.transition('start => {ready, waiting, reset}', function() {});
 
   t.ok(m._transitions.start.ready,
@@ -37,7 +37,7 @@ test('A transition can define multiple destinations', function(t) {
 });
 
 test('A transition can define multiple origins and destinations', function(t) {
-  var m = new StateMachine();
+  var m = new TMachine();
   m.transition('{start, epoch} => {ready, waiting}', function() {});
 
   t.ok(m._transitions.start.ready,
@@ -54,7 +54,7 @@ test('A transition can define multiple origins and destinations', function(t) {
 test('Origins and destinations can be wrapped in {} or () or not', function(t) {
   var input;
   var output = ['a', 'b', 'three'];
-  var parse = StateMachine.prototype._parseGroup;
+  var parse = TMachine.prototype._parseGroup;
 
   input = '{ a, b, three }';
   t.deepEqual(parse(input), output);
@@ -72,7 +72,7 @@ test('Origins and destinations can be wrapped in {} or () or not', function(t) {
 })
 
 test('Transitions throw if malformed', function(t) {
-  var m = new StateMachine();
+  var m = new TMachine();
 
   t.throws(function() {
     m.transition(' => nope', function(){ });
@@ -94,7 +94,7 @@ test('Transitions throw if malformed', function(t) {
 })
 
 test('Transitions throw if duplicatd', function(t) {
-  var m = new StateMachine();
+  var m = new TMachine();
   m.transition('yep => nope', function(){ });
 
   t.throws(function() {
@@ -117,7 +117,7 @@ test('Transitions throw if duplicatd', function(t) {
 })
 
 test('An undefined origin is Error', function(t) {
-  var m = new StateMachine();
+  var m = new TMachine();
 
   m.transition('a => b', function(ctr) {
     ctr.ok();
@@ -131,7 +131,7 @@ test('An undefined origin is Error', function(t) {
 })
 
 test('An undefined destination is Error', function(t) {
-  var m = new StateMachine();
+  var m = new TMachine();
   m.transition('a => c', function() {});
   m.to('b', function(err) {
     t.ok(err, 'Invalid transition should error');
