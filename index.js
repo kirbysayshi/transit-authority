@@ -108,7 +108,7 @@ States.prototype.to = function(newState, opt_cb) {
       transitionCheck();
       self._lg('Halted transition %s => %s', from, newState);
       controller.halted = true;
-      cb(err || null);
+      cb(err || new Error('TransitionHalted'));
       return;
     },
     to: function(name, cb) {

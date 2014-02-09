@@ -125,3 +125,16 @@ test('.ok seals subsequent calls to .halt', function(t) {
   })
   m.to('loaded');
 })
+
+test('If no error is passed to .halt, a default one is present', function(t) {
+  var m = new StateMachine();
+  m.transition('start => loaded', function(ctr) {
+    ctr.halt();
+  })
+
+  m.to('loaded', function(err) {
+    t.ok(err, 'Default error should be present');
+    t.ok(err.message === 'TransitionHalted');
+    t.end();
+  });
+})
