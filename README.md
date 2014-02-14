@@ -101,20 +101,20 @@ A `namePair` can be anything like:
 And can also be expanded:
 
 - `(current) => next`
-- `{current, another} => next`
+- `{ current, another } => next`
 - `current, another => next`
-- `current,another => next,future`
+- `current,another => next, future`
 - `current,another => {next,future}`
 
 The only important aspects are that a `=>` (fat arrow) separates the various `origin`s and `destination`s, and that multiple `origin`s/`destination`s are separated by commas.
 
-An `action` is simply a function that accepts a single parameter, `controller` (shortened to `ctl` or `ctr` in examples). A `controller` gives the a few things:
+An `action` is simply a function that accepts a single parameter, `controller` (shortened to `ctl` or `ctr` in examples). A `controller` gives a few things:
 
-- `.ok()`: accept this transition, and move to the state defined as the `destination` state.
-- `.halt(reason)`: reject this transition, and remain in the `origin` state. If a `reason` (`instanceof Error`) is provided it is passed along to the `.to` callback (if any) that originally requested the change. If no `reason` is given, a default error is created instead.
-- `.to(newState)`: move to a new state from the current. If the transition has not be `ok()`ed or `halt()`ed prior to calling `.to`, then a warning is printed when debug output is enabled:
 - `.fromState`: the current origin state, or the state that the machine is transitioning _from_.
 - `.toState`: the state requested via `.to` that triggered/matched this transition.
+- `.ok()`: accept this transition, and move to the state defined as the `destination` state.
+- `.halt(reason)`: reject this transition, and remain in the `origin` state. If a `reason` (`instanceof Error`) is provided it is passed along to the `.to` callback (if any) that originally requested the change. If no `reason` is given, a default error is created instead.
+- `.to(newState, opt_callback)`: move to a new state from the current. If the transition has not be `ok()`ed or `halt()`ed prior to calling `.to`, then a warning is printed when debug output is enabled:
 
 ```js
 m.transition('ready => waiting', function(ctr) {
@@ -130,7 +130,7 @@ m.transition('ready => waiting', function(ctr) {
 
 Attempt a transition to the `newState`. If the transition is not defined, a warning will be printed in debug mode, and an `Error` will be passed as the first argument of the callback.
 
-It's ok to no define all possible transition pairs! The warnings are just for debugging purposes.
+It's ok to not define all possible transition pairs! The warnings are just for debugging purposes.
 
 The `opt_callback` always receives an `Error` or null (in the absence of an error) as its first argument.
 
