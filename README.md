@@ -138,13 +138,13 @@ m.transition('ready => waiting', function(ctr) {
 // without acceptance (.ok) or halting (.halt) of waiting
 ```
 
-### `.to(newState, opt_callback)`
+### `.to(state, opt_callback)`
 
-Attempt a transition to the `newState`. If the transition is not defined, a warning will be printed in debug mode, and an `Error` will be passed as the first argument of the callback.
+Attempt a transition to the `state`. If the transition is not defined, a warning will be printed in debug mode, and an `Error` will be passed as the first argument of the callback.
 
 It's ok to not define all possible transition pairs! The warnings are just for debugging purposes.
 
-The `opt_callback` always receives an `Error` or null (in the absence of an error) as its first argument.
+The `opt_callback` always receives an `Error` or `null` (in the absence of an error) as its first argument.
 
 Example:
 
@@ -194,22 +194,24 @@ DEBUG='transit-authority:my-machine' node myfile.js
 Example output:
 
 ```
-transit-authority:96358 Parsed transitions start => loaded +0ms
-transit-authority:96358 Registered transition start => loaded +1ms
-transit-authority:96358 Setting initial state implicitely: start +0ms
-transit-authority:96358 Parsed transitions loaded => finished +2ms
-transit-authority:96358 Registered transition loaded => finished +1ms
-transit-authority:96358 Executing transition action start => loaded +0ms
-transit-authority:96358 Transition ok start => loaded +0ms
-transit-authority:96358 Attempting transition loaded => finished from within start => loaded +0ms
-transit-authority:96358 Executing transition action loaded => finished +0ms
-transit-authority:96358 Transition ok loaded => finished +0ms
+transit-authority:my-machine Parsed transitions start => loaded +0ms
+transit-authority:my-machine Registered transition start => loaded +1ms
+transit-authority:my-machine Setting initial state implicitely: start +0ms
+transit-authority:my-machine Parsed transitions loaded => finished +2ms
+transit-authority:my-machine Registered transition loaded => finished +1ms
+transit-authority:my-machine Executing transition action start => loaded +0ms
+transit-authority:my-machine Transition ok start => loaded +0ms
+transit-authority:my-machine Attempting transition loaded => finished from within start => loaded +0ms
+transit-authority:my-machine Executing transition action loaded => finished +0ms
+transit-authority:my-machine Transition ok loaded => finished +0ms
 ```
 
 Example of an undefined transition:
 
 ```
-transit-authority:machine Error: Undefined transition requested: waiting => playing (undefined)
+> m.to('playing');
+
+transit-authority:my-machine Error: Undefined transition requested: waiting => playing (undefined)
   at States.to (/Users/drew/transit-authority/index.js:87:11)
   at Player.play (/Users/drew/transit-authority/examples/player.js:54:16)
   at Test._cb (/Users/drew/transit-authority/test/example.player.js:12:5)
