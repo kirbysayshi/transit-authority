@@ -49,7 +49,7 @@ m.transition('paused => loading', function(ctr) {
   }
 })
 
-// This transition has two possible entry points, paused or loading.
+// This transition has two possible origin points, paused or loading.
 m.transition('paused, loading => playing', function(ctr) {
   if (sound.readyState >= sound.HAVE_ENOUGH_DATA) {
     ctr.ok();
@@ -78,7 +78,7 @@ Check [out the examples folder](examples/) and the [test coverage](test/) for mo
 API
 ---
 
-### new `Machine(options)`
+### `new Machine(options)`
 
 Options can include:
 
@@ -92,7 +92,7 @@ transitions: {
 }
 ```
 
-### .transition(namePair, action)
+### `.transition(namePair, action)`
 
 A `namePair` can be anything like:
 
@@ -106,25 +106,27 @@ And can also be expanded:
 - `current,another => next,future`
 - `current,another => {next,future}`
 
-The only important aspects are that a `=>` (fat arrow) separates the various `origin`s and `destination`s.
+The only important aspects are that a `=>` (fat arrow) separates the various `origin`s and `destination`s, and that multiple `origin`s/`destination`s are separated by commas.
 
-And action is simply a function that accepts a single parameter, `controller` (shortened to `ctl` or `ctr` in examples). A `controller` gives the action:
+An `action` is simply a function that accepts a single parameter, `controller` (shortened to `ctl` or `ctr` in examples). A `controller` gives the a few things:
 
 - `.ok()`: accept this transition, and move to the state defined as the `destination` state.
-- `.halt(reason)`: reject this transition, and remain in the `origin` state. If a `reason` is provided it is passed along to the `.to` callback (if any) that originally requested the change. If no `reason` is given, a default error is created instead.
+- `.halt(reason)`: reject this transition, and remain in the `origin` state. If a `reason` (`instanceof Error`) is provided it is passed along to the `.to` callback (if any) that originally requested the change. If no `reason` is given, a default error is created instead.
 - `.to(newState)`: move to a new state from the current. If the transition has not be `ok()`ed or `halt()`ed prior to calling `.to`, then a warning is printed when debug output is enabled:
+- `.fromState`: the current origin state, or the state that the machine is transitioning _from_.
+- `.toState`: the state requested via `.to` that triggered/matched this transition.
 
 ```js
 m.transition('ready => waiting', function(ctr) {
   ctr.to('done');
 })
 
-// When transitioned to, the above would output:
-// 'WARNING: transitioning waiting => done from within ready => waiting
+// When triggered, the above would output:
+// WARNING: transitioning waiting => done from within ready => waiting
 // without acceptance (.ok) or halting (.halt) of waiting
 ```
 
-### .to(newState, opt_callback)
+### `.to(newState, opt_callback)`
 
 Attempt a transition to the `newState`. If the transition is not defined, a warning will be printed in debug mode, and an `Error` will be passed as the first argument of the callback.
 
@@ -161,6 +163,32 @@ localStorage.debug = 'transit-authority:my-machine';
 
 // node
 DEBUG='transit-authority:my-machine' node myfile.js
+```
+
+Example output:
+
+```
+transit-authority:96358 Parsed transitions start => loaded +0ms
+transit-authority:96358 Registered transition start => loaded +1ms
+transit-authority:96358 Setting initial state implicitely: start +0ms
+transit-authority:96358 Parsed transitions loaded => finished +2ms
+transit-authority:96358 Registered transition loaded => finished +1ms
+transit-authority:96358 Executing transition action start => loaded +0ms
+transit-authority:96358 Transition ok start => loaded +0ms
+transit-authority:96358 Attempting transition loaded => finished from within start => loaded +0ms
+transit-authority:96358 Executing transition action loaded => finished +0ms
+transit-authority:96358 Transition ok loaded => finished +0ms
+```
+
+Example of an undefined transition:
+
+```
+transit-authority:machine Error: Undefined transition requested: waiting => playing (undefined)
+  at States.to (/Users/drew/transit-authority/index.js:87:11)
+  at Player.play (/Users/drew/transit-authority/examples/player.js:54:16)
+  at Test._cb (/Users/drew/transit-authority/test/example.player.js:12:5)
+  at Test.run (/Users/drew/transit-authority/node_modules/tape/lib/test.js:53:14)
+  at Object.next [as _onImmediate] (/Users/drew/transit-authority/node_modules/tape/lib/results.js:31:15  at processImmediate [as _immediateCallback] (timers.js:330:15) +1ms
 ```
 
 Tests and Coverage
