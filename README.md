@@ -78,7 +78,7 @@ Check [out the examples folder](examples/) and the [test coverage](test/) for mo
 API
 ---
 
-### `new Machine(options)`
+### `new TransitAuthority(options)`
 
 Options can include:
 
@@ -90,6 +90,18 @@ Options can include:
 transitions: {
   'ready => loading': function(ctr) {}
 }
+```
+
+### `.current()`
+
+Returns the current state as a string. The initial state is defined either by the constructor options or the first origin state defined:
+
+```js
+var m = new TransitAuthority();
+m.transition('what => who', function() {});
+
+console.log(m.current() === 'what');
+// true
 ```
 
 ### `.transition(namePair, action)`
@@ -133,6 +145,20 @@ Attempt a transition to the `newState`. If the transition is not defined, a warn
 It's ok to not define all possible transition pairs! The warnings are just for debugging purposes.
 
 The `opt_callback` always receives an `Error` or null (in the absence of an error) as its first argument.
+
+Example:
+
+```js
+var m = new TransitAuthority();
+m.transition('what => who', function(ctr) {
+  ctr.ok();
+});
+
+m.to('who', function(err) {
+  if (err) throw err;
+  // Do something else, transition was successful!
+})
+```
 
 Debug Output
 ------------
